@@ -61,12 +61,11 @@ export class ImageGenerationService {
       // Step 3: Convert product image from base64 to buffer
       const productImageBuffer = this.convertBase64ToBuffer(dto.productImage, dto.productImageMimeType);
 
-      // Step 4: Prepare all images for Gemini (face, pose, background, product)
+      // Step 4: Prepare all images for Gemini (background, pose with face, product/cloth)
       const geminiImages = [
-        { data: referenceImages.aiFace, mimeType: 'image/jpeg' },
-        { data: referenceImages.productPose, mimeType: 'image/jpeg' },
-        { data: referenceImages.productBackground, mimeType: 'image/jpeg' },
-        { data: dto.productImage.split(',')[1] || dto.productImage, mimeType: dto.productImageMimeType },
+        { data: referenceImages.productBackground, mimeType: 'image/jpeg' }, // Reference [1] = Background
+        { data: referenceImages.productPose, mimeType: 'image/jpeg' }, // Reference [2] = Pose & Face
+        { data: dto.productImage.split(',')[1] || dto.productImage, mimeType: dto.productImageMimeType }, // Reference [3] = Cloth
       ];
 
       // Step 5: Generate composite image using Gemini
@@ -149,15 +148,13 @@ export class ImageGenerationService {
    * Fetch reference images from GCS and validate they exist
    */
   private async fetchReferenceImages(dto: GenerateImageDto): Promise<{
-    aiFace: string;
     productPose: string;
     productBackground: string;
   }> {
     // Fetch entities to get image URLs/paths
-    const [productPose, productBackground, aiFace] = await Promise.all([
+    const [productPose, productBackground] = await Promise.all([
       this.productPoseRepo.findOne({ where: { id: dto.productPoseId } }),
       this.productBackgroundRepo.findOne({ where: { id: dto.productBackgroundId } }),
-      this.aiFaceRepo.findOne({ where: { id: dto.aiFaceId } }),
     ]);
 
     if (!productPose?.imageUrl && !productPose?.imagePath) {
@@ -166,19 +163,14 @@ export class ImageGenerationService {
     if (!productBackground?.imageUrl && !productBackground?.imagePath) {
       throw new NotFoundException(`${ERROR_MESSAGES.MISSING_REFERENCE_IMAGE}: Product background image not available`);
     }
-    if (!aiFace?.imageUrl && !aiFace?.imagePath) {
-      throw new NotFoundException(`${ERROR_MESSAGES.MISSING_REFERENCE_IMAGE}: AI face image not available`);
-    }
 
     // Download images from GCS and convert to base64
-    const [poseBuffer, backgroundBuffer, faceBuffer] = await Promise.all([
+    const [poseBuffer, backgroundBuffer] = await Promise.all([
       this.gcsStorageService.downloadFile(productPose.imagePath || productPose.imageUrl),
       this.gcsStorageService.downloadFile(productBackground.imagePath || productBackground.imageUrl),
-      this.gcsStorageService.downloadFile(aiFace.imagePath || aiFace.imageUrl),
     ]);
 
     return {
-      aiFace: faceBuffer.toString('base64'),
       productPose: poseBuffer.toString('base64'),
       productBackground: backgroundBuffer.toString('base64'),
     };
