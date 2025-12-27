@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsString, MinLength, MaxLength, Matches } from 'class-validator';
+import { IsEmail, IsString, MinLength, MaxLength, Matches, IsOptional } from 'class-validator';
 
 export class CreateAdminDto {
   @ApiProperty({
@@ -39,6 +39,7 @@ export class CreateAdminDto {
     example: 'Doe',
     required: false,
   })
+  @IsOptional()
   @IsString()
   @MaxLength(50)
   lastName?: string;
@@ -47,6 +48,7 @@ export class CreateAdminDto {
     description: 'Indian phone number in +91 format',
     example: '+919876543210',
   })
+  @IsString()
   @Matches(/^\+91[6-9]\d{9}$/, {
     message: 'Phone number must be a valid Indian number starting with +91',
   })

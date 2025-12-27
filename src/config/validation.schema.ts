@@ -49,6 +49,8 @@ export const validationSchema = Joi.object({
   // Gemini API (Optional - has default, but AI features won't work without it)
   GEMINI_API_KEY: Joi.string().optional(),
   GEMINI_API_URL: Joi.string().default(DEFAULT_GEMINI_API_URL),
+  GEMINI_IMAGE_MODEL: Joi.string().optional(),
+  IMAGE_RETENTION_HOURS: Joi.number().default(6),
 
   // Logging
   LOG_LEVEL: Joi.string().valid('error', 'warn', 'info', 'debug').default(DEFAULT_LOG_LEVEL),

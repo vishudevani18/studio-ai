@@ -54,8 +54,25 @@ async function bootstrap() {
   app.use(compression());
 
   // CORS configuration
+  const corsOrigins = configService.get<string[]>('app.cors.origin') || [];
+  const isDevelopment = configService.get('app.nodeEnv') === 'development';
+  
+  // In development, allow all localhost origins for easier development
+  const origin = isDevelopment
+    ? (origin: string, callback: (err: Error | null, allow?: boolean) => void) => {
+        // Allow all localhost origins in development
+        if (!origin || origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:')) {
+          callback(null, true);
+        } else if (corsOrigins.includes(origin)) {
+          callback(null, true);
+        } else {
+          callback(null, false);
+        }
+      }
+    : corsOrigins;
+
   app.enableCors({
-    origin: configService.get('app.cors.origin'),
+    origin,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,

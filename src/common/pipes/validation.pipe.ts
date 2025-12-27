@@ -1,6 +1,6 @@
 import { PipeTransform, Injectable, ArgumentMetadata, BadRequestException } from '@nestjs/common';
 import { validate } from 'class-validator';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class ValidationPipe implements PipeTransform<any> {
@@ -9,8 +9,12 @@ export class ValidationPipe implements PipeTransform<any> {
       return value;
     }
 
-    const object = plainToClass(metatype, value);
-    const errors = await validate(object);
+    const object = plainToInstance(metatype, value);
+    const errors = await validate(object, {
+      whitelist: true,
+      forbidNonWhitelisted: false,
+      skipMissingProperties: false,
+    });
 
     if (errors.length > 0) {
       const errorMessages = errors

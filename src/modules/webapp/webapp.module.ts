@@ -11,6 +11,7 @@ import { ProductPose } from '../../database/entities/product-pose.entity';
 import { AiFace } from '../../database/entities/ai-face.entity';
 import { WebAppProfileModule } from './profile/profile.module';
 import { LegalModule } from './legal/legal.module';
+import { ImageGenerationModule } from './image-generation/image-generation.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { LegalModule } from './legal/legal.module';
     ]),
     WebAppProfileModule,
     LegalModule,
+    ImageGenerationModule,
   ],
   controllers: [WebAppController],
   providers: [WebAppService],

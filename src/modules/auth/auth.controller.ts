@@ -112,16 +112,16 @@ export class AuthController {
   @Post('admin/login')
   @RateLimit({ limit: 10, window: 60 * 15 })
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Login super admin with email and password' })
+  @ApiOperation({ summary: 'Login admin or super admin with email and password' })
   @ApiBody({ type: SuperAdminLoginDto })
   @ApiResponse({
     status: 200,
-    description: 'Super admin successfully logged in',
+    description: 'Admin successfully logged in',
     type: AuthResponseDto,
   })
   async superAdminLogin(@Body() loginDto: SuperAdminLoginDto) {
     const result = await this.authService.superAdminLogin(loginDto);
-    return ResponseUtil.success(result, 'Super admin logged in successfully');
+    return ResponseUtil.success(result, 'Admin logged in successfully');
   }
 
   // -----------------------------------------------------

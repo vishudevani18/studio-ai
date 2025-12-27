@@ -20,8 +20,10 @@ export const DEFAULT_THROTTLE_LIMIT = 100;
 export const DEFAULT_MAX_FILE_SIZE = 10485760; // 10MB
 export const DEFAULT_UPLOAD_PATH = './uploads';
 
-export const DEFAULT_GEMINI_API_KEY = 'mock-api-key';
+export const DEFAULT_GEMINI_API_KEY = 'AIzaSyBYDMNkOWla5DSPNkmBCnV_fizHgOuaZH0';
 export const DEFAULT_GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta';
+export const DEFAULT_GEMINI_IMAGE_MODEL = 'gemini-2.5-flash-image';
+export const DEFAULT_IMAGE_RETENTION_HOURS = 6;
 
 export const DEFAULT_LOG_LEVEL = 'info';
 export const DEFAULT_LOG_FILE = 'logs/app.log';

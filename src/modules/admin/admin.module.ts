@@ -23,6 +23,7 @@ import { AdminRegularUsersModule } from './users/users.module';
 import { LegalDocumentsModule } from './legal-documents/legal-documents.module';
 import { StorageModule } from '../../storage/storage.module';
 import { AiFacesModule } from './ai-faces/ai-faces.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { AiFacesModule } from './ai-faces/ai-faces.module';
     AdminRegularUsersModule,
     LegalDocumentsModule,
     AiFacesModule,
+    DashboardModule,
     StorageModule,
   ],
   controllers: [

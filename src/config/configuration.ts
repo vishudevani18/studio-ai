@@ -45,6 +45,8 @@ import {
   DEFAULT_WHATSAPP_API_URL,
   DEFAULT_WHATSAPP_OTP_SIGNUP_TEMPLATE,
   DEFAULT_WHATSAPP_OTP_RESET_TEMPLATE,
+  DEFAULT_GEMINI_IMAGE_MODEL,
+  DEFAULT_IMAGE_RETENTION_HOURS,
 } from 'src/common/constants/config.constants';
 
 export default registerAs('app', () => ({
@@ -74,9 +76,20 @@ export default registerAs('app', () => ({
     maxFileSize: parseInt(process.env.MAX_FILE_SIZE, 10) || DEFAULT_MAX_FILE_SIZE, // 10MB
     path: process.env.UPLOAD_PATH || DEFAULT_UPLOAD_PATH,
   },
+  google: {
+    projectId: process.env.GCP_PROJECT_ID || '',
+  },
   gemini: {
     apiKey: process.env.GEMINI_API_KEY || DEFAULT_GEMINI_API_KEY,
     apiUrl: process.env.GEMINI_API_URL || DEFAULT_GEMINI_API_URL,
+    imageGeneration: {
+      model: process.env.GEMINI_IMAGE_MODEL || DEFAULT_GEMINI_IMAGE_MODEL,
+      promptTemplate: process.env.GEMINI_IMAGE_PROMPT_TEMPLATE,
+      maxImages: 4,
+      responseModality: 'IMAGE' as const,
+      imageRetentionHours: parseInt(process.env.IMAGE_RETENTION_HOURS, 10) || DEFAULT_IMAGE_RETENTION_HOURS,
+      location: process.env.VERTEX_AI_LOCATION || 'us-central1',
+    },
   },
   logging: {
     level: process.env.LOG_LEVEL || DEFAULT_LOG_LEVEL,

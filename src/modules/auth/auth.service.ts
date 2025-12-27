@@ -138,12 +138,13 @@ export class AuthService {
   // ========================================================
   async superAdminLogin(dto: SuperAdminLoginDto): Promise<AuthResponseDto> {
     const { email, password } = dto;
-console.log('email', email, 'password', password);
-    // 1. Find super admin by email
+    // 1. Find admin or super admin by email
     const user = await this.userRepo.findOne({
-      where: { email, role: UserRole.SUPER_ADMIN },
+      where: [
+        { email, role: UserRole.SUPER_ADMIN },
+        { email, role: UserRole.ADMIN },
+      ],
     });
-console.log(user);
     if (!user) {
       throw new UnauthorizedException('Invalid email or password');
     }

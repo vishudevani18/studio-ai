@@ -162,6 +162,36 @@ console.log('GcsStorageService constructor', projectId, this.bucketName, this.cd
   }
 
   /**
+   * Download a file from GCS and return as Buffer
+   * @param path GCS path or public URL
+   * @returns File buffer
+   */
+  async downloadFile(pathOrUrl: string): Promise<Buffer> {
+    try {
+      const path = this.extractPathFromUrl(pathOrUrl);
+      const bucket = this.storage.bucket(this.bucketName);
+      const file = bucket.file(path);
+
+      // Check if file exists
+      const [exists] = await file.exists();
+      if (!exists) {
+        throw new BadRequestException(`File not found: ${path}`);
+      }
+
+      // Download file as buffer
+      const [buffer] = await file.download();
+      this.logger.log(`File downloaded successfully: ${path}`);
+      return buffer;
+    } catch (error) {
+      this.logger.error(`Failed to download file from GCS: ${pathOrUrl}`, error);
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new BadRequestException(`Failed to download file: ${error.message}`);
+    }
+  }
+
+  /**
    * Extract GCS path from URL (handles public URLs, signed URLs, and old CDN URLs)
    * @param url URL (public GCS URL, signed URL, or old CDN URL format)
    * @returns GCS path

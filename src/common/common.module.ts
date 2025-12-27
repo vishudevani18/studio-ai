@@ -1,8 +1,7 @@
 import { Module, Global } from '@nestjs/common';
-import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptor } from './interceptors/logging.interceptor';
 import { HttpExceptionFilter, AllExceptionsFilter } from './filters/http-exception.filter';
-import { ValidationPipe } from './pipes/validation.pipe';
 
 @Global()
 @Module({
@@ -19,10 +18,8 @@ import { ValidationPipe } from './pipes/validation.pipe';
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
     },
-    {
-      provide: APP_PIPE,
-      useClass: ValidationPipe,
-    },
+    // Removed custom ValidationPipe - using global ValidationPipe from main.ts instead
+    // The global pipe has better error handling and formatting
   ],
   exports: [],
 })

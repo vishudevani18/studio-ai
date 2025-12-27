@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ImageCleanupSubscriber } from './subscribers/image-cleanup.subscriber';
+import { GeneratedImageCleanupSubscriber } from './subscribers/generated-image-cleanup.subscriber';
 import { StorageModule } from '../storage/storage.module';
 
 @Module({
@@ -44,7 +45,7 @@ import { StorageModule } from '../storage/storage.module';
     }),
     StorageModule,
   ],
-  providers: [ImageCleanupSubscriber],
+  providers: [ImageCleanupSubscriber, GeneratedImageCleanupSubscriber],
   exports: [TypeOrmModule],
 })
 export class DatabaseModule {}
